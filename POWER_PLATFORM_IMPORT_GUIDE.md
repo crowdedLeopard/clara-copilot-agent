@@ -1,23 +1,25 @@
 # Clara Copilot Agent - Power Platform Custom Connector Configuration
 
-## 🎉 UPDATED - September 4, 2025
+## 🎉 UPDATED - January 15, 2025
 
 ### ✅ Fixed Issues:
 1. **OAuth Redirect URI Mismatch** - Added missing redirect URI to Azure AD app registration
 2. **JSON Schema Type Mismatch** - Fixed date field serialization in usage report endpoint  
 3. **"undefined" String Issue** - API now properly handles null DateTime values as JSON null
+4. **License Count Schema Mismatch** - Fixed property names in Swagger spec to match actual API response (TotalLicenses, AssignedLicenses, AvailableLicenses)
+5. **Usage Report Parameters** - Corrected Swagger spec to match actual endpoint (only accepts optional `days` parameter)
 
 ### 📂 Latest Files:
-- **OpenAPI Spec**: Use `clara-openapi-spec-final.json` for import
-- **API Version**: 1.0.1 with proper null handling for date fields
+- **Swagger Spec**: Use `clara-swagger-2.0-corrected.yaml` for import (corrected schema alignment)
+- **API Version**: 1.0.1 with proper null handling and schema alignment
 
 ## Quick Import Instructions
 
-### Step 1: Import OpenAPI Specification
+### Step 1: Import Swagger Specification
 1. Go to [Power Apps](https://make.powerapps.com)
 2. Navigate to **Data** > **Custom connectors**
 3. Click **+ New custom connector** > **Import an OpenAPI file**
-4. **⚠️ IMPORTANT**: Upload the `clara-openapi-spec-final.json` file from this directory (not the old one)
+4. **⚠️ IMPORTANT**: Upload the `clara-swagger-2.0-corrected.yaml` file from this directory (latest with schema fixes)
 
 ### Step 2: Configure Authentication
 After importing, configure these authentication settings in the **Security** tab:

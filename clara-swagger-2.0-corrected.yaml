@@ -1,0 +1,431 @@
+swagger: '2.0'
+info:
+  title: Clara Copilot Agent API
+  description: >-
+    API for managing Microsoft 365 Copilot licenses, usage analytics, and user
+    group management
+  contact:
+    name: Clara Support
+    email: support@clara.com
+  version: 1.0.1
+host: clara-copilot-api-cpg7bqbecffpe8ha.uksouth-01.azurewebsites.net
+basePath: /
+schemes:
+  - https
+consumes: []
+produces: []
+paths:
+  /api/copilot/license-counts:
+    get:
+      tags:
+        - License Management
+      summary: Get Copilot license availability
+      description: Returns the total, used, and available Microsoft 365 Copilot licenses
+      operationId: GetLicenseCounts
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: License counts retrieved successfully
+          schema:
+            $ref: '#/definitions/LicenseCountsResponse'
+          examples:
+            application/json:
+              TotalLicenses: 100
+              AssignedLicenses: 75
+              AvailableLicenses: 25
+        '401':
+          description: Unauthorized - Invalid or missing authentication
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+        - oauth2:
+            - api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user
+  /api/copilot/usage-report:
+    get:
+      tags:
+        - Usage Analytics
+      summary: Get user usage report
+      description: Returns usage data for all users with Copilot licenses within the specified date range
+      operationId: GetUsageReport
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: days
+          description: 'Number of days to check for inactivity (default: 30)'
+          type: integer
+          default: 30
+          maximum: 365
+          minimum: 1
+          required: false
+      responses:
+        '200':
+          description: Usage report retrieved successfully
+          schema:
+            description: List of users with their Copilot usage data
+            type: array
+            items:
+              $ref: '#/definitions/M365CopilotUsageReport'
+          examples:
+            application/json:
+              - userId: 12345678-1234-1234-1234-123456789abc
+                userDisplayName: John Doe
+                userPrincipalName: john.doe@contoso.com
+                userDepartment: IT
+                lastActivityDate: '2025-08-01T10:30:00.0000000+00:00'
+                copilotChatLastActivityDate: '2025-08-01T10:30:00.0000000+00:00'
+                microsoftTeamsCopilotLastActivityDate: null
+                wordCopilotLastActivityDate: null
+                excelCopilotLastActivityDate: null
+                powerPointCopilotLastActivityDate: null
+                outlookCopilotLastActivityDate: null
+                oneNoteCopilotLastActivityDate: null
+                loopCopilotLastActivityDate: null
+        '400':
+          description: Bad request - Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing authentication
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+        - oauth2:
+            - api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user
+  /api/copilot/assign-license-by-email/{userEmail}:
+    post:
+      tags:
+        - License Management
+      summary: Assign Copilot license to user by email
+      description: >-
+        Assigns a Microsoft 365 Copilot license to the specified user using
+        their email address
+      operationId: AssignLicenseByEmail
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: userEmail
+          description: Email address of the user to assign the license to
+          required: true
+          type: string
+          format: email
+      responses:
+        '200':
+          description: License assigned successfully
+          schema:
+            $ref: '#/definitions/LicenseOperationResponse'
+        '400':
+          description: Bad request - Invalid email format or user not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing authentication
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '409':
+          description: Conflict - License already assigned or no licenses available
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+        - oauth2:
+            - api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user
+  /api/copilot/remove-license-by-email/{userEmail}:
+    post:
+      tags:
+        - License Management
+      summary: Remove Copilot license from user by email
+      description: >-
+        Removes the Microsoft 365 Copilot license from the specified user using
+        their email address
+      operationId: RemoveLicenseByEmail
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: userEmail
+          description: Email address of the user to remove the license from
+          required: true
+          type: string
+          format: email
+      responses:
+        '200':
+          description: License removed successfully
+          schema:
+            $ref: '#/definitions/LicenseOperationResponse'
+        '400':
+          description: Bad request - Invalid email format or user not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing authentication
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '404':
+          description: Not found - User does not have a Copilot license
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+        - oauth2:
+            - api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user
+  /api/copilot/add-user-to-group/{userEmail}:
+    post:
+      tags:
+        - Group Management
+      summary: Add user to Copilot group
+      description: >-
+        Adds the specified user to the Copilot security group using their email
+        address
+      operationId: AddUserToGroup
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: userEmail
+          description: Email address of the user to add to the group
+          required: true
+          type: string
+          format: email
+      responses:
+        '200':
+          description: User added to group successfully
+          schema:
+            $ref: '#/definitions/GroupOperationResponse'
+        '400':
+          description: Bad request - Invalid email format or user not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing authentication
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '409':
+          description: Conflict - User is already a member of the group
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+        - oauth2:
+            - api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user
+  /api/copilot/remove-user-from-group/{userEmail}:
+    post:
+      tags:
+        - Group Management
+      summary: Remove user from Copilot group
+      description: >-
+        Removes the specified user from the Copilot security group using their
+        email address
+      operationId: RemoveUserFromGroup
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: userEmail
+          description: Email address of the user to remove from the group
+          required: true
+          type: string
+          format: email
+      responses:
+        '200':
+          description: User removed from group successfully
+          schema:
+            $ref: '#/definitions/GroupOperationResponse'
+        '400':
+          description: Bad request - Invalid email format or user not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing authentication
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '404':
+          description: Not found - User is not a member of the group
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+        - oauth2:
+            - api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user
+definitions:
+  LicenseCountsResponse:
+    description: Response containing Copilot license count information
+    required:
+      - TotalLicenses
+      - AssignedLicenses
+      - AvailableLicenses
+    type: object
+    properties:
+      TotalLicenses:
+        description: Total number of Copilot licenses in the organization
+        type: integer
+        format: int32
+        example: 100
+      AssignedLicenses:
+        description: Number of licenses currently assigned to users
+        type: integer
+        format: int32
+        example: 75
+      AvailableLicenses:
+        description: Number of licenses available for assignment
+        type: integer
+        format: int32
+        example: 25
+  M365CopilotUsageReport:
+    description: Microsoft 365 Copilot usage report for a specific user
+    required:
+      - userId
+      - userDisplayName
+    type: object
+    properties:
+      userId:
+        description: Unique identifier for the user
+        type: string
+        example: 12345678-1234-1234-1234-123456789abc
+      userDisplayName:
+        description: Display name of the user
+        type: string
+        example: John Doe
+      userPrincipalName:
+        description: User principal name (email)
+        type: string
+        example: john.doe@contoso.com
+      userDepartment:
+        description: User's department
+        type: string
+        example: IT Department
+        x-nullable: true
+      lastActivityDate:
+        description: Last activity date across all Copilot apps
+        type: string
+        format: date-time
+        x-nullable: true
+        example: '2025-08-15T10:30:00.0000000+00:00'
+      copilotChatLastActivityDate:
+        description: Last activity date in Copilot Chat
+        type: string
+        format: date-time
+        x-nullable: true
+        example: '2025-08-15T10:30:00.0000000+00:00'
+      microsoftTeamsCopilotLastActivityDate:
+        description: Last activity date in Microsoft Teams Copilot
+        type: string
+        format: date-time
+        x-nullable: true
+        example: '2025-08-14T14:20:00.0000000+00:00'
+      wordCopilotLastActivityDate:
+        description: Last activity date in Word Copilot
+        type: string
+        format: date-time
+        x-nullable: true
+      excelCopilotLastActivityDate:
+        description: Last activity date in Excel Copilot
+        type: string
+        format: date-time
+        x-nullable: true
+      powerPointCopilotLastActivityDate:
+        description: Last activity date in PowerPoint Copilot
+        type: string
+        format: date-time
+        x-nullable: true
+      outlookCopilotLastActivityDate:
+        description: Last activity date in Outlook Copilot
+        type: string
+        format: date-time
+        x-nullable: true
+      oneNoteCopilotLastActivityDate:
+        description: Last activity date in OneNote Copilot
+        type: string
+        format: date-time
+        x-nullable: true
+      loopCopilotLastActivityDate:
+        description: Last activity date in Loop Copilot
+        type: string
+        format: date-time
+        x-nullable: true
+  LicenseOperationResponse:
+    description: Response for license assignment/removal operations
+    required:
+      - userEmail
+      - message
+    type: object
+    properties:
+      userEmail:
+        description: Email address of the user
+        type: string
+        example: john.doe@contoso.com
+      assigned:
+        description: Whether the license was assigned (for assign operations)
+        type: boolean
+        example: true
+      removed:
+        description: Whether the license was removed (for remove operations)
+        type: boolean
+        example: true
+      message:
+        description: Success message describing the operation
+        type: string
+        example: License assigned successfully
+  GroupOperationResponse:
+    description: Response for group membership operations
+    required:
+      - userEmail
+      - groupName
+      - message
+    type: object
+    properties:
+      userEmail:
+        description: Email address of the user
+        type: string
+        example: john.doe@contoso.com
+      added:
+        description: Whether the user was added to the group (for add operations)
+        type: boolean
+        example: true
+      removed:
+        description: Whether the user was removed from the group (for remove operations)
+        type: boolean
+        example: true
+      groupName:
+        description: Name of the group
+        type: string
+        example: Copilot Users
+      message:
+        description: Success message describing the operation
+        type: string
+        example: User added to group successfully
+  ErrorResponse:
+    description: Error response format
+    required:
+      - message
+    type: object
+    properties:
+      message:
+        description: Error message describing what went wrong
+        type: string
+        example: User not found
+      details:
+        description: Additional error details
+        type: string
+        example: The specified user email does not exist in the tenant
+      timestamp:
+        description: When the error occurred
+        type: string
+        format: date-time
+        example: '2025-09-04T10:30:00.0000000+00:00'
+parameters: {}
+responses: {}
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: accessCode
+    authorizationUrl: https://login.microsoftonline.com/c87f36f7-fc65-453c-9019-0d724f21bc42/oauth2/v2.0/authorize
+    tokenUrl: https://login.microsoftonline.com/c87f36f7-fc65-453c-9019-0d724f21bc42/oauth2/v2.0/token
+    scopes:
+      api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user: Access Clara Copilot Agent API
+security:
+  - oauth2:
+      - api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user
+tags: []
