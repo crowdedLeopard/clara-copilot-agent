@@ -1,0 +1,735 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Clara Copilot Agent API",
+    "description": "API for managing Microsoft 365 Copilot licenses and user activities. Clara helps organizations monitor license usage, optimize allocation, and streamline user communication for maximum ROI on M365 Copilot investment.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Clara Copilot Agent",
+      "url": "https://github.com/luishdemetrio/clara-copilot-agent"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://clara-copilot-api-cpg7bqbecffpe8ha.uksouth-01.azurewebsites.net",
+      "description": "Clara Copilot Agent Production API"
+    }
+  ],
+  "security": [
+    {
+      "oauth2": [
+        "api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user"
+      ]
+    }
+  ],
+  "paths": {
+    "/api/copilot/license-counts": {
+      "get": {
+        "operationId": "GetLicenseCounts",
+        "summary": "Get Copilot license availability counts",
+        "description": "Returns the total number of available, used, and remaining Copilot licenses in the organization",
+        "tags": ["License Management"],
+        "security": [
+          {
+            "oauth2": [
+              "api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "License counts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LicenseCountsResponse"
+                },
+                "example": {
+                  "totalLicenses": 100,
+                  "usedLicenses": 75,
+                  "availableLicenses": 25,
+                  "utilizationPercentage": 75.0
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/copilot/usage-report": {
+      "get": {
+        "operationId": "GetUsageReport",
+        "summary": "Get inactive users report",
+        "description": "Returns a list of users who haven't used Copilot in the specified number of days",
+        "tags": ["Usage Analytics"],
+        "security": [
+          {
+            "oauth2": [
+              "api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "description": "Number of days to check for inactivity (default: 30)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 30,
+              "minimum": 1,
+              "maximum": 365
+            },
+            "example": 30
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usage report retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "List of users with their Copilot usage data",
+                  "items": {
+                    "$ref": "#/components/schemas/M365CopilotUsageReport"
+                  }
+                },
+                "example": [
+                  {
+                    "userId": "12345678-1234-1234-1234-123456789abc",
+                    "userDisplayName": "John Doe",
+                    "userPrincipalName": "john.doe@contoso.com",
+                    "userDepartment": "IT",
+                    "lastActivityDate": "2025-08-01T00:00:00Z",
+                    "copilotChatLastActivityDate": "2025-08-01T00:00:00Z",
+                    "microsoftTeamsCopilotLastActivityDate": null,
+                    "wordCopilotLastActivityDate": null,
+                    "excelCopilotLastActivityDate": null,
+                    "powerPointCopilotLastActivityDate": null,
+                    "outlookCopilotLastActivityDate": null,
+                    "oneNoteCopilotLastActivityDate": null,
+                    "loopCopilotLastActivityDate": null
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/copilot/assign-license-by-email/{userEmail}": {
+      "post": {
+        "operationId": "AssignLicenseByEmail",
+        "summary": "Assign Copilot license to user",
+        "description": "Assigns a Microsoft 365 Copilot license to the specified user by email address",
+        "tags": ["License Management"],
+        "security": [
+          {
+            "oauth2": [
+              "api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userEmail",
+            "in": "path",
+            "description": "Email address of the user to assign the license to",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            },
+            "example": "john.doe@contoso.com"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "License assigned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LicenseOperationResponse"
+                },
+                "example": {
+                  "userEmail": "john.doe@contoso.com",
+                  "assigned": true,
+                  "message": "Copilot license assigned successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "message": "User with email john.doe@contoso.com not found."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - User already has a license or no licenses available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/copilot/remove-license-by-email/{userEmail}": {
+      "post": {
+        "operationId": "RemoveLicenseByEmail",
+        "summary": "Remove Copilot license from user",
+        "description": "Removes the Microsoft 365 Copilot license from the specified user by email address",
+        "tags": ["License Management"],
+        "security": [
+          {
+            "oauth2": [
+              "api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userEmail",
+            "in": "path",
+            "description": "Email address of the user to remove the license from",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            },
+            "example": "jane.doe@contoso.com"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "License removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LicenseOperationResponse"
+                },
+                "example": {
+                  "userEmail": "jane.doe@contoso.com",
+                  "removed": true,
+                  "message": "Copilot license removed successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found or user doesn't have a license",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "message": "User with email jane.doe@contoso.com not found."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/copilot/add-user-to-group/{userEmail}": {
+      "post": {
+        "operationId": "AddUserToGroup",
+        "summary": "Add user to Copilot group",
+        "description": "Adds the specified user to the configured Copilot security group",
+        "tags": ["Group Management"],
+        "security": [
+          {
+            "oauth2": [
+              "api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userEmail",
+            "in": "path",
+            "description": "Email address of the user to add to the group",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            },
+            "example": "new.user@contoso.com"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User added to group successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupOperationResponse"
+                },
+                "example": {
+                  "userEmail": "new.user@contoso.com",
+                  "added": true,
+                  "message": "User added to Copilot group successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User or group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "message": "User or group not found."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User already in group",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/copilot/remove-user-from-group/{userEmail}": {
+      "post": {
+        "operationId": "RemoveUserFromGroup",
+        "summary": "Remove user from Copilot group",
+        "description": "Removes the specified user from the configured Copilot security group",
+        "tags": ["Group Management"],
+        "security": [
+          {
+            "oauth2": [
+              "api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userEmail",
+            "in": "path",
+            "description": "Email address of the user to remove from the group",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            },
+            "example": "former.user@contoso.com"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User removed from group successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupOperationResponse"
+                },
+                "example": {
+                  "userEmail": "former.user@contoso.com",
+                  "removed": true,
+                  "message": "User removed from Copilot group successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User or group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "message": "User or group not found."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "description": "Azure Active Directory OAuth2 authentication",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://login.microsoftonline.com/c87f36f7-fc65-453c-9019-0d724f21bc42/oauth2/v2.0/authorize",
+            "tokenUrl": "https://login.microsoftonline.com/c87f36f7-fc65-453c-9019-0d724f21bc42/oauth2/v2.0/token",
+            "refreshUrl": "https://login.microsoftonline.com/c87f36f7-fc65-453c-9019-0d724f21bc42/oauth2/v2.0/token",
+            "scopes": {
+              "api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user": "Access Clara Copilot Agent API as the signed-in user"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "LicenseCountsResponse": {
+        "type": "object",
+        "description": "Response containing license count information",
+        "properties": {
+          "totalLicenses": {
+            "type": "integer",
+            "description": "Total number of Copilot licenses available to the organization",
+            "example": 100
+          },
+          "usedLicenses": {
+            "type": "integer",
+            "description": "Number of licenses currently assigned to users",
+            "example": 75
+          },
+          "availableLicenses": {
+            "type": "integer",
+            "description": "Number of licenses available for assignment",
+            "example": 25
+          },
+          "utilizationPercentage": {
+            "type": "number",
+            "format": "float",
+            "description": "Percentage of licenses currently in use",
+            "example": 75.0
+          }
+        },
+        "required": ["totalLicenses", "usedLicenses", "availableLicenses"]
+      },
+      "UsageReportResponse": {
+        "type": "object",
+        "description": "Response containing usage report data",
+        "properties": {
+          "inactiveUsers": {
+            "type": "array",
+            "description": "List of users who haven't used Copilot recently",
+            "items": {
+              "$ref": "#/components/schemas/InactiveUser"
+            }
+          },
+          "totalInactiveUsers": {
+            "type": "integer",
+            "description": "Total count of inactive users",
+            "example": 5
+          },
+          "reportPeriodDays": {
+            "type": "integer",
+            "description": "Number of days the report covers",
+            "example": 30
+          }
+        },
+        "required": ["inactiveUsers", "totalInactiveUsers", "reportPeriodDays"]
+      },
+      "InactiveUser": {
+        "type": "object",
+        "description": "Information about a user who hasn't used Copilot recently",
+        "properties": {
+          "userEmail": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the inactive user",
+            "example": "john.doe@contoso.com"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "Display name of the user",
+            "example": "John Doe"
+          },
+          "lastActivityDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of last Copilot activity",
+            "example": "2025-08-01T00:00:00Z"
+          },
+          "daysSinceLastActivity": {
+            "type": "integer",
+            "description": "Number of days since last activity",
+            "example": 34
+          }
+        },
+        "required": ["userEmail", "displayName", "daysSinceLastActivity"]
+      },
+      "LicenseOperationResponse": {
+        "type": "object",
+        "description": "Response for license assignment/removal operations",
+        "properties": {
+          "userEmail": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the user",
+            "example": "john.doe@contoso.com"
+          },
+          "assigned": {
+            "type": "boolean",
+            "description": "Whether the license was assigned (for assign operations)",
+            "example": true
+          },
+          "removed": {
+            "type": "boolean",
+            "description": "Whether the license was removed (for remove operations)",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Success message describing the operation",
+            "example": "Copilot license assigned successfully"
+          }
+        },
+        "required": ["userEmail", "message"]
+      },
+      "GroupOperationResponse": {
+        "type": "object",
+        "description": "Response for group membership operations",
+        "properties": {
+          "userEmail": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the user",
+            "example": "john.doe@contoso.com"
+          },
+          "added": {
+            "type": "boolean",
+            "description": "Whether the user was added to the group",
+            "example": true
+          },
+          "removed": {
+            "type": "boolean",
+            "description": "Whether the user was removed from the group",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Success message describing the operation",
+            "example": "User added to Copilot group successfully"
+          }
+        },
+        "required": ["userEmail", "message"]
+      },
+      "M365CopilotUsageReport": {
+        "type": "object",
+        "description": "Microsoft 365 Copilot usage report for a specific user",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "Unique identifier for the user",
+            "example": "12345678-1234-1234-1234-123456789abc"
+          },
+          "userDisplayName": {
+            "type": "string",
+            "description": "Display name of the user",
+            "example": "John Doe"
+          },
+          "userPrincipalName": {
+            "type": "string",
+            "nullable": true,
+            "description": "User principal name (email)",
+            "example": "john.doe@contoso.com"
+          },
+          "userDepartment": {
+            "type": "string",
+            "nullable": true,
+            "description": "User's department",
+            "example": "IT Department"
+          },
+          "lastActivityDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last activity date across all Copilot apps",
+            "example": "2025-08-15T10:30:00Z"
+          },
+          "copilotChatLastActivityDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last activity date in Copilot Chat",
+            "example": "2025-08-15T10:30:00Z"
+          },
+          "microsoftTeamsCopilotLastActivityDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last activity date in Microsoft Teams Copilot",
+            "example": "2025-08-14T14:20:00Z"
+          },
+          "wordCopilotLastActivityDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last activity date in Word Copilot"
+          },
+          "excelCopilotLastActivityDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last activity date in Excel Copilot"
+          },
+          "powerPointCopilotLastActivityDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last activity date in PowerPoint Copilot"
+          },
+          "outlookCopilotLastActivityDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last activity date in Outlook Copilot"
+          },
+          "oneNoteCopilotLastActivityDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last activity date in OneNote Copilot"
+          },
+          "loopCopilotLastActivityDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last activity date in Loop Copilot"
+          }
+        },
+        "required": ["userId", "userDisplayName"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Error response format",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong",
+            "example": "User with email john.doe@contoso.com not found."
+          },
+          "statusCode": {
+            "type": "integer",
+            "description": "HTTP status code",
+            "example": 404
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the error occurred",
+            "example": "2025-09-04T22:30:00Z"
+          }
+        },
+        "required": ["message"]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "License Management",
+      "description": "Operations for managing Microsoft 365 Copilot licenses"
+    },
+    {
+      "name": "Usage Analytics",
+      "description": "Operations for analyzing Copilot usage patterns"
+    },
+    {
+      "name": "Group Management",
+      "description": "Operations for managing Copilot security group membership"
+    }
+  ]
+}

@@ -167,12 +167,19 @@ public class CopilotUsageService : ICopilotUsageService
 
     private DateTime? ParseNullableDateTime(JToken  token)
     {
-      
-        var str = (string)token!;
+        // Handle null or undefined tokens
+        if (token == null || token.Type == JTokenType.Null)
+            return null;
+        
+        var str = token.ToString();
+        
+        // Handle empty strings or "undefined" values
+        if (string.IsNullOrWhiteSpace(str) || str.Equals("undefined", StringComparison.OrdinalIgnoreCase))
+            return null;
+        
         if (DateTime.TryParse(str, out var dt))
             return dt;
 
         return null;
-
     }
 }
