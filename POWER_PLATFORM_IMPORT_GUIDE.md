@@ -84,6 +84,14 @@ After importing, configure these authentication settings in the **Security** tab
 
 ### Usage Analytics
 - **GET** `/api/copilot/usage-report?days={days}` - Get inactive users report
+- **GET** `/api/copilot/user-analytics/{userId}` - Get detailed user analytics (supports both User ID and email/UPN)
+- **GET** `/api/copilot/usage-summary` - Get overall usage summary
+- **GET** `/api/copilot/top-users` - Get top users by activity
+- **GET** `/api/copilot/all-users-analytics` - Get analytics for all users
+
+**Note**: The `user-analytics/{userId}` endpoint now supports both:
+- User ID (e.g., `a1b2c3d4-e5f6-7890-abcd-123456789012`)  
+- Email/UPN (e.g., `user@company.com`)
 
 ### Group Management
 - **POST** `/api/copilot/add-user-to-group/{userEmail}` - Add user to Copilot group
@@ -179,6 +187,42 @@ Use the new enhanced Swagger specification for complete analytics support:
 ### Use Cases for Power Platform
 1. **Executive Dashboards**: Create real-time Copilot adoption dashboards
 2. **Department Reports**: Automated weekly/monthly department usage reports
+
+## Common Issues and Solutions
+
+### Issue: Property "assignedLicenses" was expected but is not present
+**Problem**: Power Platform expected `assignedLicenses` but API was returning `usedLicenses`
+**Solution**: ✅ **FIXED** - API now returns the correct property name `assignedLicenses`
+**Test**: Try the license-counts endpoint again - it should work now
+
+### Issue: User not found when using email/UPN
+**Problem**: User analytics endpoint only accepted User IDs, not email addresses  
+**Example Error**: `User with ID chrismathias@company.com not found or has no Copilot license`
+**Solution**: ✅ **FIXED** - API now accepts both User ID and email/UPN for user analytics
+**Test**: Try calling `/api/copilot/user-analytics/chrismathias@MngEnvMCAP525856.onmicrosoft.com` - it should work now
+
+### Issue: 500 Internal Server Error on API calls
+**Problem**: Invalid client secret in Azure App Service configuration
+**Solution**: ✅ **FIXED** - Client secret has been updated in Azure App Service
+**Verification**: API now returns proper 401 (Unauthorized) instead of 500 errors for unauthenticated requests
+
+### Issue: Authentication token expires
+**Problem**: OAuth tokens have limited lifetime (1-2 hours)
+**Solution**: 
+1. Go to Power Platform **Test** tab
+2. Click **"New connection"** 
+3. Re-authenticate with your credentials
+4. Test the connection again
+
+### Testing Your Connector
+After the recent fixes, your Power Platform connector should now work properly:
+1. **License Counts**: Should return `totalLicenses`, `assignedLicenses`, `availableLicenses`
+2. **User Analytics**: Should accept both User ID and email address
+3. **Authentication**: Should work without 500 errors
+
+If you still encounter issues, check the API directly at:
+- **Swagger UI**: https://clara-copilot-api-cpg7bqbecffpe8ha.uksouth-01.azurewebsites.net/swagger
+- **Test Authentication**: Re-create your Power Platform connection using the authentication details provided
 3. **User Onboarding**: Track individual user progress and engagement
 4. **License Optimization**: Identify inactive users for license reassignment
 5. **Training Programs**: Target low-engagement users for additional training
