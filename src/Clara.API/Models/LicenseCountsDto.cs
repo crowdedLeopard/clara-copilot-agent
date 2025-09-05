@@ -7,7 +7,7 @@ public class LicenseCountsDto
     [JsonPropertyName("totalLicenses")]
     public int TotalLicenses { get; set; }
     
-    [JsonPropertyName("usedLicenses")]
+    [JsonPropertyName("assignedLicenses")]
     public int AssignedLicenses { get; set; }
     
     [JsonPropertyName("availableLicenses")]

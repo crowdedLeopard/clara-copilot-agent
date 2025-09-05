@@ -3,3 +3,9 @@
 ################################################################################
 
 /src/Clara.API/appsettings.Development.json
+
+# Client secrets and sensitive files
+CLIENT_SECRET_LOCAL.md
+**/CLIENT_SECRET*.md
+**/*secret*.md
+**/*SECRET*.md

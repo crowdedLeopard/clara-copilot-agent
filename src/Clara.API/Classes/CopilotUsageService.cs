@@ -103,7 +103,10 @@ public class CopilotUsageService : ICopilotUsageService
     public async Task<UserUsageAnalytics> GetUserUsageAnalyticsAsync(string userId, int days = 30)
     {
         var allUsersAnalytics = await GetAllUsersAnalyticsAsync(days);
-        var userAnalytics = allUsersAnalytics.FirstOrDefault(u => u.UserId == userId);
+        
+        // Try to find by UserId first, then by UserPrincipalName (email)
+        var userAnalytics = allUsersAnalytics.FirstOrDefault(u => u.UserId == userId) ??
+                           allUsersAnalytics.FirstOrDefault(u => u.UserPrincipalName?.Equals(userId, StringComparison.OrdinalIgnoreCase) == true);
         
         if (userAnalytics == null)
         {
