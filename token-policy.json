@@ -1,0 +1,7 @@
+{
+  "definition": [
+    "{\"TokenLifetimePolicy\":{\"Version\":1,\"AccessTokenLifetime\":\"24:00:00\",\"RefreshTokenMaxAge\":\"90.00:00:00\",\"RefreshTokenInactivityTimeout\":\"90.00:00:00\",\"RefreshTokenMaxAgeMultiFactor\":\"90.00:00:00\"}}"
+  ],
+  "displayName": "Clara-Copilot-MaxTokenLifetime",
+  "isOrganizationDefault": false
+}

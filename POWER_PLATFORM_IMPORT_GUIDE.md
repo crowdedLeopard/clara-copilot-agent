@@ -43,6 +43,15 @@ After importing, configure these authentication settings in the **Security** tab
 2. Create a new connection using your Azure AD credentials
 3. Test each operation to ensure they work correctly
 
+### ⚠️ Troubleshooting Authentication Errors
+
+**If you get 401 "token expired" errors:**
+
+1. **Quick Fix**: Go to **Test** tab → Click **"New connection"** → Re-authenticate
+2. **Alternative**: Delete existing connection in **Data** → **Connections**, then create new one
+3. **Root Cause**: OAuth tokens expire (normal security behavior)
+4. **See**: `AUTHENTICATION_TROUBLESHOOTING.md` for detailed steps
+
 ### Step 4: Use in Copilot Studio
 1. Go to [Copilot Studio](https://copilotstudio.microsoft.com)
 2. Create or edit a copilot
