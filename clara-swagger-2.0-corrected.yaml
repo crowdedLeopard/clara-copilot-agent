@@ -253,25 +253,22 @@ definitions:
   LicenseCountsResponse:
     description: Response containing Copilot license count information
     required:
-      - TotalLicenses
-      - AssignedLicenses
-      - AvailableLicenses
+      - totalLicenses
+      - usedLicenses
+      - availableLicenses
     type: object
     properties:
-      TotalLicenses:
+      totalLicenses:
         description: Total number of Copilot licenses in the organization
         type: integer
-        format: int32
         example: 100
-      AssignedLicenses:
+      usedLicenses:
         description: Number of licenses currently assigned to users
         type: integer
-        format: int32
         example: 75
-      AvailableLicenses:
+      availableLicenses:
         description: Number of licenses available for assignment
         type: integer
-        format: int32
         example: 25
   M365CopilotUsageReport:
     description: Microsoft 365 Copilot usage report for a specific user
