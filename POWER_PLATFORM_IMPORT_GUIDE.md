@@ -133,5 +133,56 @@ The Clara API app registration should have these Microsoft Graph permissions:
 - `Organization.Read.All` (Application)
 - `Directory.Read.All` (Application)
 
+## 🆕 Enhanced Analytics Features (September 5, 2025)
+
+### New Analytics Endpoints
+The Clara Copilot Agent API has been enhanced with comprehensive per-user analytics:
+
+#### Individual User Analytics
+- **Endpoint**: `GET /api/copilot/user-analytics/{userId}`
+- **Purpose**: Get detailed analytics for a specific user including engagement scores, app usage, and productivity metrics
+- **Parameters**: `userId` (path), `days` (query, optional, default: 30)
+
+#### Organizational Analytics  
+- **Endpoint**: `GET /api/copilot/usage-summary`
+- **Purpose**: Get comprehensive organizational summary with trends, department breakdowns, and application usage statistics
+- **Parameters**: `days` (query, optional, default: 30)
+
+#### Top Users Report
+- **Endpoint**: `GET /api/copilot/top-users`
+- **Purpose**: Get the most active Copilot users
+- **Parameters**: `topCount` (query, optional, default: 10), `days` (query, optional, default: 30)
+
+#### Department Analytics
+- **Endpoint**: `GET /api/copilot/department-analytics/{department}`
+- **Purpose**: Get usage analytics for a specific department
+- **Parameters**: `department` (path), `days` (query, optional, default: 30)
+
+#### All Users Analytics
+- **Endpoint**: `GET /api/copilot/all-users-analytics`
+- **Purpose**: Get analytics for all users with Copilot licenses
+- **Parameters**: `days` (query, optional, default: 30)
+
+### Enhanced Swagger Specification
+Use the new enhanced Swagger specification for complete analytics support:
+- **File**: `clara-swagger-analytics-enhanced.yaml`
+- **Features**: Includes all new analytics endpoints with detailed response schemas
+- **Compatibility**: Fully compatible with Power Platform custom connectors
+
+### Analytics Data Includes
+- **User Engagement Scores**: 0-100 engagement, diversity, and consistency metrics
+- **Application Usage**: Per-app activity tracking across all Copilot applications
+- **Time Range Analytics**: Usage broken down by 7/30/90 days, current/previous month
+- **Department Insights**: Adoption rates, average usage per department
+- **Productivity Trends**: Week-over-week and month-over-month growth tracking
+
+### Use Cases for Power Platform
+1. **Executive Dashboards**: Create real-time Copilot adoption dashboards
+2. **Department Reports**: Automated weekly/monthly department usage reports
+3. **User Onboarding**: Track individual user progress and engagement
+4. **License Optimization**: Identify inactive users for license reassignment
+5. **Training Programs**: Target low-engagement users for additional training
+
 ### Support
 For issues with the Clara API itself, refer to the [GitHub repository](https://github.com/luishdemetrio/clara-copilot-agent).
+For detailed endpoint documentation, see `CLARA_ANALYTICS_ENDPOINTS.md`.
