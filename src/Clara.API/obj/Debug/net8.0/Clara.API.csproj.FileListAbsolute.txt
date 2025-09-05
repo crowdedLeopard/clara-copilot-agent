@@ -158,3 +158,13 @@ C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\obj\Debu
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\obj\Debug\net8.0\Clara.API.genruntimeconfig.cache
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\obj\Debug\net8.0\ref\Clara.API.dll
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Debug\net8.0\publish\publish\web.config
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Debug\net8.0\publish\web.config
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Debug\net8.0\publish\appsettings.Development.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Debug\net8.0\publish\appsettings.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Debug\net8.0\publish\Clara.API.deps.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Debug\net8.0\publish\Clara.API.runtimeconfig.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Debug\net8.0\publish\publish\appsettings.Development.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Debug\net8.0\publish\publish\appsettings.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Debug\net8.0\publish\publish\Clara.API.deps.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Debug\net8.0\publish\publish\Clara.API.runtimeconfig.json

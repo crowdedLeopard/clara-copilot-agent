@@ -1,4 +1,5 @@
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\Clara.API.exe
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\publish\publish\web.config
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\publish\web.config
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\appsettings.Development.json
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\appsettings.json
@@ -6,6 +7,10 @@ C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\publish\appsettings.json
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\publish\Clara.API.deps.json
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\publish\Clara.API.runtimeconfig.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\publish\publish\appsettings.Development.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\publish\publish\appsettings.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\publish\publish\Clara.API.deps.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\publish\publish\Clara.API.runtimeconfig.json
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\Clara.API.dll
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\Clara.API.deps.json
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\publish\Clara.API.runtimeconfig.json

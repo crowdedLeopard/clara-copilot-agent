@@ -121,5 +121,107 @@ public class CopilotController : ControllerBase
 
     }
 
+    /// <summary>
+    /// Get detailed usage analytics for a specific user
+    /// </summary>
+    /// <param name="userId">The user ID to get analytics for</param>
+    /// <param name="days">Number of days to analyze (default: 30)</param>
+    [HttpGet("user-analytics/{userId}")]
+    [Authorize]
+    public async Task<IActionResult> GetUserAnalytics(string userId, [FromQuery] int days = 30)
+    {
+        try
+        {
+            var analytics = await _usageService.GetUserUsageAnalyticsAsync(userId, days);
+            return Ok(analytics);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Error retrieving user analytics", error = ex.Message });
+        }
+    }
+    
+    /// <summary>
+    /// Get usage analytics for all users with Copilot licenses
+    /// </summary>
+    /// <param name="days">Number of days to analyze (default: 30)</param>
+    [HttpGet("all-users-analytics")]
+    [Authorize]
+    public async Task<IActionResult> GetAllUsersAnalytics([FromQuery] int days = 30)
+    {
+        try
+        {
+            var analytics = await _usageService.GetAllUsersAnalyticsAsync(days);
+            return Ok(analytics);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Error retrieving all users analytics", error = ex.Message });
+        }
+    }
+    
+    /// <summary>
+    /// Get comprehensive usage summary report
+    /// </summary>
+    /// <param name="days">Number of days to analyze (default: 30)</param>
+    [HttpGet("usage-summary")]
+    [Authorize]
+    public async Task<IActionResult> GetUsageSummary([FromQuery] int days = 30)
+    {
+        try
+        {
+            var summary = await _usageService.GetUsageSummaryReportAsync(days);
+            return Ok(summary);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Error retrieving usage summary", error = ex.Message });
+        }
+    }
+    
+    /// <summary>
+    /// Get top users by Copilot usage
+    /// </summary>
+    /// <param name="topCount">Number of top users to return (default: 10)</param>
+    /// <param name="days">Number of days to analyze (default: 30)</param>
+    [HttpGet("top-users")]
+    [Authorize]
+    public async Task<IActionResult> GetTopUsers([FromQuery] int topCount = 10, [FromQuery] int days = 30)
+    {
+        try
+        {
+            var topUsers = await _usageService.GetTopUsersAsync(topCount, days);
+            return Ok(topUsers);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Error retrieving top users", error = ex.Message });
+        }
+    }
+    
+    /// <summary>
+    /// Get usage analytics for users in a specific department
+    /// </summary>
+    /// <param name="department">Department name</param>
+    /// <param name="days">Number of days to analyze (default: 30)</param>
+    [HttpGet("department-analytics/{department}")]
+    [Authorize]
+    public async Task<IActionResult> GetDepartmentAnalytics(string department, [FromQuery] int days = 30)
+    {
+        try
+        {
+            var departmentUsers = await _usageService.GetUsersByDepartmentAsync(department, days);
+            return Ok(departmentUsers);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Error retrieving department analytics", error = ex.Message });
+        }
+    }
+
 
 }

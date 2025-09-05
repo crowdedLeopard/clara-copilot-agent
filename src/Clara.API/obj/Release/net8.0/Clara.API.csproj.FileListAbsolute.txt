@@ -164,3 +164,8 @@ C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Rele
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Release\net8.0\publish\appsettings.Development.json
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Release\net8.0\publish\Clara.API.deps.json
 C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Release\net8.0\publish\Clara.API.runtimeconfig.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Release\net8.0\publish\publish\web.config
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Release\net8.0\publish\publish\appsettings.Development.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Release\net8.0\publish\publish\appsettings.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Release\net8.0\publish\publish\Clara.API.deps.json
+C:\Users\chrismathias\Documents\Clara\clara-copilot-agent\src\Clara.API\bin\Release\net8.0\publish\publish\Clara.API.runtimeconfig.json
