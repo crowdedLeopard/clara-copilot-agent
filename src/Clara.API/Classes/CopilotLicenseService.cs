@@ -20,47 +20,51 @@ public class CopilotLicenseService : ICopilotLicenseService
 
     public async Task<bool> AssignLicenseByEmailAsync(string userEmail)
     {
-        // Get user by email
-        var user = await _graphClient.Users[userEmail]
-            .GetAsync(config => { config.QueryParameters.Select = new[] { "id" }; });
+        // Sanitize the email by removing invisible characters
+        userEmail = SanitizeEmail(userEmail);
+        
+        // Find user by userPrincipalName (email)
+        var users = await _graphClient.Users
+            .GetAsync(config => 
+            {
+                config.QueryParameters.Filter = $"userPrincipalName eq '{userEmail}'";
+                config.QueryParameters.Select = new[] { "id", "userPrincipalName" };
+            });
 
+        var user = users?.Value?.FirstOrDefault();
         if (user == null || string.IsNullOrEmpty(user.Id))
             return false;
 
-        var skuGuid = Guid.Parse(_copilotSkuId);
-
-        var requestBody = new Microsoft.Graph.Users.Item.AssignLicense.AssignLicensePostRequestBody
-        {
-            AddLicenses = new List<AssignedLicense>
-            {
-                new AssignedLicense { SkuId = skuGuid }
-            },
-            RemoveLicenses = new List<Guid?>()
-        };
-
-        await _graphClient.Users[user.Id].AssignLicense.PostAsync(requestBody);
-        return true;
+        return await AssignLicenseByIdAsync(user.Id);
     }
 
     public async Task<bool> RemoveLicenseByEmailAsync(string userEmail)
     {
-        // Get user by email
-        var user = await _graphClient.Users[userEmail]
-            .GetAsync(config => { config.QueryParameters.Select = new[] { "id" }; });
+        // Sanitize the email by removing invisible characters
+        userEmail = SanitizeEmail(userEmail);
+        
+        // Find user by userPrincipalName (email)
+        var users = await _graphClient.Users
+            .GetAsync(config => 
+            {
+                config.QueryParameters.Filter = $"userPrincipalName eq '{userEmail}'";
+                config.QueryParameters.Select = new[] { "id", "userPrincipalName" };
+            });
 
+        var user = users?.Value?.FirstOrDefault();
         if (user == null || string.IsNullOrEmpty(user.Id))
             return false;
 
-        var skuGuid = Guid.Parse(_copilotSkuId);
-
-        var requestBody = new Microsoft.Graph.Users.Item.AssignLicense.AssignLicensePostRequestBody
-        {
-            AddLicenses = new List<AssignedLicense>(),
-            RemoveLicenses = new List<Guid?>() { skuGuid }
-        };
-
-        await _graphClient.Users[user.Id].AssignLicense.PostAsync(requestBody);
-        return true;
+        return await RemoveLicenseByIdAsync(user.Id);
+    }
+    
+    private static string SanitizeEmail(string email)
+    {
+        if (string.IsNullOrEmpty(email))
+            return email;
+            
+        // Remove invisible characters like zero-width space (\u200B)
+        return email.Replace("\u200B", "").Replace("\u200C", "").Replace("\u200D", "").Trim();
     }
 
     public async Task<LicenseCountsDto> GetLicenseCountsAsync()

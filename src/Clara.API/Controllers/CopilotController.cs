@@ -49,9 +49,21 @@ public class CopilotController : ControllerBase
     [HttpPost("remove-license/{userId}")]
     public async Task<IActionResult> RemoveCopilotLicense(string userId)
     {
-        var result = await _licenseService.RemoveLicenseByIdAsync(userId);
-        if (!result)
-            return NotFound(new { message = $"User with id {userId} not found." });
+        bool result;
+        
+        // Check if userId looks like an email (contains @ symbol)
+        if (userId.Contains("@"))
+        {
+            result = await _licenseService.RemoveLicenseByEmailAsync(userId);
+            if (!result)
+                return NotFound(new { message = $"User with email {userId} not found." });
+        }
+        else
+        {
+            result = await _licenseService.RemoveLicenseByIdAsync(userId);
+            if (!result)
+                return NotFound(new { message = $"User with id {userId} not found." });
+        }
 
         return Ok(new { userId, removed = true });
     }
@@ -72,9 +84,21 @@ public class CopilotController : ControllerBase
     [HttpPost("assign-license/{userId}")]
     public async Task<IActionResult> AssignCopilotLicense(string userId)
     {
-        var result = await _licenseService.AssignLicenseByIdAsync(userId);
-        if (!result)
-            return NotFound(new { message = $"User with id {userId} not found." });
+        bool result;
+        
+        // Check if userId looks like an email (contains @ symbol)
+        if (userId.Contains("@"))
+        {
+            result = await _licenseService.AssignLicenseByEmailAsync(userId);
+            if (!result)
+                return NotFound(new { message = $"User with email {userId} not found." });
+        }
+        else
+        {
+            result = await _licenseService.AssignLicenseByIdAsync(userId);
+            if (!result)
+                return NotFound(new { message = $"User with id {userId} not found." });
+        }
 
         return Ok(new { userId, assigned = true });
 
