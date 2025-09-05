@@ -1,20 +1,36 @@
-# Schema Fixes Summary - January 15, 2025
+# Schema Fixes Summary - September 5, 2025 (CRITICAL UPDATES)
 
 ## Issues Fixed for Power Platform Connector
 
-### 1. License Count Endpoint Schema Mismatch
-**Problem**: Power Platform connector was expecting different property names than what the API was returning.
+### 🚨 CRITICAL: License Count Endpoint Schema Mismatch
+**Problem**: Power Platform connector was expecting specific property names and types that didn't match the API response.
+
+**Power Platform Expected Schema**:
+- Property names: `totalLicenses`, `usedLicenses`, `availableLicenses` (lowercase)
+- Property types: `integer` (without int32 format specifier)
 
 **Fix Applied**:
-- Updated Swagger spec property names to match C# model:
-  - `totalLicenses` → `TotalLicenses` (int)
-  - `assignedLicenses` → `AssignedLicenses` (int) 
-  - `availableLicenses` → `AvailableLicenses` (int)
+- Updated C# model with JsonPropertyName attributes to serialize correctly:
+  - `TotalLicenses` → serializes as `"totalLicenses"`
+  - `AssignedLicenses` → serializes as `"usedLicenses"`
+  - `AvailableLicenses` → serializes as `"availableLicenses"`
+- Updated Swagger spec to match Power Platform expectations
+- Removed `format: int32` which was causing type mismatch errors
 
 **Files Modified**:
-- `clara-swagger-2.0-corrected.yaml` - Updated LicenseCountsDto definition
+- `src/Clara.API/Models/LicenseCountsDto.cs` - Added JsonPropertyName attributes
+- `clara-swagger-2.0-corrected.yaml` - Updated schema to match Power Platform format
 
-### 2. Usage Report Endpoint Parameter Mismatch
+### Current API Schema (CORRECTED)
+
+### License Count Response
+```json
+{
+  "totalLicenses": 100,
+  "usedLicenses": 75,
+  "availableLicenses": 25
+}
+```
 **Problem**: Swagger spec defined required `startDate` and `endDate` parameters, but actual API only accepts optional `days` parameter.
 
 **Fix Applied**:
