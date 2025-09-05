@@ -13,8 +13,9 @@
 5. **Usage Report Parameters** - Corrected Swagger spec to match actual endpoint (only accepts optional `days` parameter)
 
 ### 📂 Latest Files:
-- **Swagger Spec**: Use `clara-swagger-2.0-corrected.yaml` for import (CRITICAL schema fixes applied)
-- **API Version**: 1.0.2 with Power Platform compatible schema
+- **Swagger Spec**: Use `clara-swagger-powerplatform-compatible.yaml` for import (FIXES schema validation warnings)
+- **Alternative**: `clara-swagger-2.0-corrected.yaml` (if you encounter issues with the first one)
+- **API Version**: 1.0.2 with Power Platform specific schema compatibility
 
 ## Quick Import Instructions
 
@@ -22,7 +23,7 @@
 1. Go to [Power Apps](https://make.powerapps.com)
 2. Navigate to **Data** > **Custom connectors**
 3. Click **+ New custom connector** > **Import an OpenAPI file**
-4. **⚠️ IMPORTANT**: Upload the `clara-swagger-2.0-corrected.yaml` file from this directory (latest with schema fixes)
+4. **⚠️ IMPORTANT**: Upload the `clara-swagger-powerplatform-compatible.yaml` file (fixes schema validation warnings)
 
 ### Step 2: Configure Authentication
 After importing, configure these authentication settings in the **Security** tab:

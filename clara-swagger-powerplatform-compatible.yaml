@@ -7,7 +7,7 @@ info:
   contact:
     name: Clara Support
     email: support@clara.com
-  version: 1.0.1
+  version: 1.0.2
 host: clara-copilot-api-cpg7bqbecffpe8ha.uksouth-01.azurewebsites.net
 basePath: /
 schemes:
@@ -31,9 +31,9 @@ paths:
             $ref: '#/definitions/LicenseCountsResponse'
           examples:
             application/json:
-              TotalLicenses: 100
-              AssignedLicenses: 75
-              AvailableLicenses: 25
+              totalLicenses: 100
+              usedLicenses: 75
+              availableLicenses: 25
         '401':
           description: Unauthorized - Invalid or missing authentication
           schema:
@@ -50,7 +50,7 @@ paths:
       tags:
         - Usage Analytics
       summary: Get user usage report
-      description: Returns usage data for all users with Copilot licenses within the specified date range
+      description: Returns usage data for all users with Copilot licenses
       operationId: GetUsageReport
       produces:
         - application/json
@@ -62,7 +62,6 @@ paths:
           default: 30
           maximum: 365
           minimum: 1
-          required: false
       responses:
         '200':
           description: Usage report retrieved successfully
@@ -77,8 +76,8 @@ paths:
                 userDisplayName: John Doe
                 userPrincipalName: john.doe@contoso.com
                 userDepartment: IT
-                lastActivityDate: '2025-08-01T10:30:00.0000000+00:00'
-                copilotChatLastActivityDate: '2025-08-01T10:30:00.0000000+00:00'
+                lastActivityDate: '2025-08-01'
+                copilotChatLastActivityDate: '2025-08-01'
                 microsoftTeamsCopilotLastActivityDate: null
                 wordCopilotLastActivityDate: null
                 excelCopilotLastActivityDate: null
@@ -293,55 +292,45 @@ definitions:
         description: User's department
         type: string
         example: IT Department
-        x-nullable: true
       lastActivityDate:
+        format: date-time
         description: Last activity date across all Copilot apps
         type: string
-        format: date-time
-        x-nullable: true
         example: '2025-08-15T10:30:00.0000000+00:00'
       copilotChatLastActivityDate:
+        format: date-time
         description: Last activity date in Copilot Chat
         type: string
-        format: date-time
-        x-nullable: true
         example: '2025-08-15T10:30:00.0000000+00:00'
       microsoftTeamsCopilotLastActivityDate:
+        format: date-time
         description: Last activity date in Microsoft Teams Copilot
         type: string
-        format: date-time
-        x-nullable: true
         example: '2025-08-14T14:20:00.0000000+00:00'
       wordCopilotLastActivityDate:
+        format: date-time
         description: Last activity date in Word Copilot
         type: string
-        format: date-time
-        x-nullable: true
       excelCopilotLastActivityDate:
+        format: date-time
         description: Last activity date in Excel Copilot
         type: string
-        format: date-time
-        x-nullable: true
       powerPointCopilotLastActivityDate:
+        format: date-time
         description: Last activity date in PowerPoint Copilot
         type: string
-        format: date-time
-        x-nullable: true
       outlookCopilotLastActivityDate:
+        format: date-time
         description: Last activity date in Outlook Copilot
         type: string
-        format: date-time
-        x-nullable: true
       oneNoteCopilotLastActivityDate:
+        format: date-time
         description: Last activity date in OneNote Copilot
         type: string
-        format: date-time
-        x-nullable: true
       loopCopilotLastActivityDate:
+        format: date-time
         description: Last activity date in Loop Copilot
         type: string
-        format: date-time
-        x-nullable: true
   LicenseOperationResponse:
     description: Response for license assignment/removal operations
     required:
@@ -408,9 +397,9 @@ definitions:
         type: string
         example: The specified user email does not exist in the tenant
       timestamp:
+        format: date-time
         description: When the error occurred
         type: string
-        format: date-time
         example: '2025-09-04T10:30:00.0000000+00:00'
 parameters: {}
 responses: {}
@@ -418,10 +407,10 @@ securityDefinitions:
   oauth2:
     type: oauth2
     flow: accessCode
-    authorizationUrl: https://login.microsoftonline.com/c87f36f7-fc65-453c-9019-0d724f21bc42/oauth2/v2.0/authorize
-    tokenUrl: https://login.microsoftonline.com/c87f36f7-fc65-453c-9019-0d724f21bc42/oauth2/v2.0/token
+    tokenUrl: https://login.windows.net/common/oauth2/authorize
     scopes:
-      api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user: Access Clara Copilot Agent API
+      api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user: api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user
+    authorizationUrl: https://login.microsoftonline.com/common/oauth2/authorize
 security:
   - oauth2:
       - api://20aed42e-9b90-40b7-94cd-e171bd3e15ac/access_as_user
